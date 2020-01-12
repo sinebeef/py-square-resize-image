@@ -27,33 +27,32 @@ for product in PRODUCTS:
         )
  
         # filename references the copied IMAGE
-        filename = os.path.join(NEW_DIR, product['image_filename'])        
-        image = Image.open(filename)
-        width, height = image.size
-        
-        if width != height:
-        
-            bigside = width if width > height else height
-            squared = Image.new('RGB', (bigside, bigside), (255, 255, 255, 255))
-            offset = (int(round(((bigside - width) / 2), 0)), int(round(((bigside - height) / 2),0)))
-            squared.paste(image, offset)
-            
-            # save newly squared image
-            squared.save(filename)
+        filename = os.path.join(NEW_DIR, product['image_filename'])
 
-        # filename references the copied IMAGE
-        filename = os.path.join(NEW_DIR, product['image_filename'])        
-        image = Image.open(filename)
-        width, height = image.size            
-        if width < 300:
+        with Image.open(filename) as image:
+            width, height = image.size
+            
+            if width != height:
+            
+                bigside = width if width > height else height
+                squared = Image.new('RGB', (bigside, bigside), (255, 255, 255, 255))
+                offset = (int(round(((bigside - width) / 2), 0)), int(round(((bigside - height) / 2),0)))
+                squared.paste(image, offset)
                 
-            # resize and save image
-            if image.format == 'JPEG':
-                image = image.resize((300,300), image.LANCZOS)
-                image.save(filename)
-            else:
-                image = image.resize((300,300))
-                image.save(filename)
+                # save newly squared image
+                squared.save(filename)
+      
+        with Image.open(filename) as image:
+            width, height = image.size            
+            if width < 300:
+                    
+                # resize and save image
+                if image.format == 'JPEG':
+                    image = image.resize((300,300), image.LANCZOS)
+                    image.save(filename)
+                else:
+                    image = image.resize((300,300))
+                    image.save(filename)
 
     else:
         no_image.add(product['product_number'])
